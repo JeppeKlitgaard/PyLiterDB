@@ -1,4 +1,4 @@
-"""PyDbLite.py
+"""PyLiterDB.py
 
 BSD licence
 
@@ -13,8 +13,8 @@ identified by a unique id and has a version number incremented
 at every record update, to detect concurrent access
 
 Syntax :
-    from PyDbLite import Base
-    db = Base('dummy')
+    from PyLiterDB import DB
+    db = DB('dummy')
     # create new base with field names
     db.create('name','age','size')
     # existing base
@@ -44,28 +44,11 @@ Syntax :
     db.drop_field('name')
     # save changes on disk
     db.commit()
-
-version 2.2 : add __contains__
-
-version 2.3 : introduce syntax (db('name')>'f') & (db('age') == 30)
-
-version 2.4 :
-- add BSD Licence
-- raise exception if unknown fields in insert
-
-version 2.5 :
-- test is now in folder test
-
-version 2.6
-- if db exists, read field names on instance creation
-- allow add_field on an instance even if it was not open()
-- attribute path is the path of the database in the file system
-  (was called "name" in previous versions)
-- attribute name is the base name of the database, without the extension
-- adapt code to run on Python 2 and Python 3
+    # check if already exists
+    db.exists
 """
 
-VERSION = ("2", "6")
+VERSION = ("0", "1")
 
 import os
 import bisect
