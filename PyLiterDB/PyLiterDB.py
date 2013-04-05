@@ -356,7 +356,8 @@ class DB(object):
                     continue
                 _id = record["__id__"]
                 # remove id for the old value
-                old_pos = bisect.bisect(self.indices[indx][record[indx]], _id) - 1
+                old_pos = bisect.bisect(self.indices[indx][record[indx]],
+                                        _id) - 1
                 del self.indices[indx][record[indx]][old_pos]
                 if not self.indices[indx][record[indx]]:
                     del self.indices[indx][record[indx]]
