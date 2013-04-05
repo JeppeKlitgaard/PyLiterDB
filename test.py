@@ -1,10 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 import datetime
 import unittest
-import random
-import os
-import sys
-sys.path.insert(0, os.path.dirname(os.getcwd()))
+
 import PyLiterDB
 print(PyLiterDB.__file__)
 print(dir(PyLiterDB))
