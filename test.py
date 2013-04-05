@@ -1,67 +1,115 @@
 # -*- coding: iso-8859-1 -*-
 import datetime
 import unittest
+import os
 
 import PyLiterDB
 print(PyLiterDB.__file__)
-print(dir(PyLiterDB))
 
-if os.path.exists('test.pdl'):
-    os.remove('test.pdl')
-
-db = None
 vals1 = [('simon', datetime.date(1984, 8, 17), 26)]
 vals2 = [('camille', datetime.date(1986, 12, 12), 24),
          ('jean', datetime.date(1989, 6, 12), 21),
          ('florence', datetime.date(1994, 1, 14), 17),
          ('marie-anne', datetime.date(1999, 1, 28), 12)]
 vals3 = [('éçùï', datetime.date(2000, 10, 10), 55)]
+vals = vals1 + vals2 + vals3
+filename = "test.pdl"
 
 
-class TestFunctions(unittest.TestCase):
-    def test_00_init(self):
-        global db
-        db = PyLiterDB.Base('test.pdl')
-        db.create('name', 'birth', 'age', mode="override")
+class TestPyLiterDB(unittest.TestCase):
+    def setUp(self, empty=False):
+        self.db = PyLiterDB.Base(filename)
+        self.db.create("name", "birth", "age", mode="override")
+        if not empty:
+            for val in vals:
+                self.db.insert(*val)
 
-    def test_01_insert(self):
-        for i, val in enumerate(vals1 + vals2 + vals3):
-            assert db.insert(*val) == i
-        assert len(db) == len(vals1 + vals2 + vals3)
+    def tearDown(self):
+        self.db.commit()
+        os.remove(filename)
+        del self.db
 
-    def test_10_select(self):
+#    def test_01_insert(self):
+#        for i, val in enumerate(vals1 + vals2 + vals3):
+#            assert db.insert(*val) == i
+#        assert len(db) == len(vals1 + vals2 + vals3)
+#
+#    def test_10_select(self):
+#        for i, v in enumerate(vals1):
+#            rec = db[i]
+#            for j, field in enumerate(db.fields):
+#                assert rec[field] == v[j]
+#
+#    def test_11_select(self):
+#        assert db(name='foo') == []
+#        assert db(name='éçùï')[0]['birth'] == datetime.date(2000, 10, 10)
+#
+#    def test_12_iter(self):
+#        self.assertEqual(len([x for x in db]), len(db))
+#        for val in vals1+vals2+vals3:
+#            self.assertEqual([x for x in db if x['name'] == val],
+#                             db(name=val))
+#            self.assertEqual([x for x in db if x['birth'] == val],
+#                             db(birth=val))
+#            self.assertEqual([x for x in db if x['age'] == val],
+#                             db(age=val))
+#
+#    def test_30_update(self):
+#        for record in db:
+#            db.update(record, name=record['name'].capitalize())
+#        self.assertEqual(db[0]['name'], "Simon")
+#        #self.assertEqual(db[5]['name'][0],"É")
+#
+#    def test_40_delete(self):
+#        del db[0]
+#        self.assertEqual(db(name='Simon'), [])
+#        self.assertEqual(len(db), len(vals1 + vals2 + vals3) - 1)
+
+    def test_db_insert(self):
+        self.tearDown()
+        self.setUp(empty=True)  # For this test we want an empty database
+        for i, val in enumerate(vals):
+            self.assertEqual(self.db.insert(*val), i)  # Ensure we get the ID.
+        self.assertEqual(len(self.db), len(vals))  # Ensure
+        # Everything was inserted.
+
+    def test_db_select1(self):
         for i, v in enumerate(vals1):
-            rec = db[i]
-            for j, field in enumerate(db.fields):
-                assert rec[field] == v[j]
+            rec = self.db[i]  # Record should be Ith item in DB
+            for j, field in enumerate(self.db.fields):  # j = counter
+                self.assertEqual(rec[field], v[j])  # Ensure rec's field is
+                # the same as origional lists j (?)
 
-    def test_11_select(self):
-        assert db(name='foo') == []
-        assert db(name='éçùï')[0]['birth'] == datetime.date(2000, 10, 10)
+    def test_db_select2(self):
+        self.assertEqual(self.db(name='foo'), [])  # Ensure get an empty list
+        # when searching for non-existing item
+        self.assertEqual(self.db(name='éçùï')[0]['birth'],
+                         datetime.date(2000, 10, 10))  # Data integrity check
 
-    def test_12_iter(self):
-        self.assertEqual(len([x for x in db]), len(db))
-        for val in vals1+vals2+vals3:
-            self.assertEqual([x for x in db if x['name'] == val],
-                             db(name=val))
-            self.assertEqual([x for x in db if x['birth'] == val],
-                             db(birth=val))
-            self.assertEqual([x for x in db if x['age'] == val],
-                             db(age=val))
+    def test_db_iter(self):
+        self.assertEqual(len([x for x in self.db]),
+                         len(self.db))  # Ensure length returns right number.
 
-    def test_30_update(self):
-        for record in db:
-            db.update(record, name=record['name'].capitalize())
-        self.assertEqual(db[0]['name'], "Simon")
-        #self.assertEqual(db[5]['name'][0],"É")
+        for val in vals:  # Ensure we get data back in the right order.
+            self.assertEqual([x for x in self.db if x['name'] == val],
+                             self.db(name=val))
+            self.assertEqual([x for x in self.db if x['birth'] == val],
+                             self.db(birth=val))
+            self.assertEqual([x for x in self.db if x['age'] == val],
+                             self.db(age=val))
 
-    def test_40_delete(self):
-        del db[0]
-        self.assertEqual(db(name='Simon'), [])
-        self.assertEqual(len(db), len(vals1 + vals2 + vals3) - 1)
+    def test_db_update(self):
+        for record in self.db:
+            self.db.update(record, name=record['name'].capitalize())
+            # Capitalize all the names.
+        self.assertEqual(self.db[0]['name'], "Simon")  # Ensure it was actually
+        # Capitalized.
+
+    def test_db_delete(self):
+        self.db.delete(self.db(name="simon"))  # Delete simon from db
+        self.assertEqual(self.db(name='simon'), [])  # Ensure he's no longer.
+        self.assertEqual(len(self.db), len(vals) - 1)  # Ensure list is 1 short
 
 
 if __name__ == "__main__":
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestFunctions))
-    unittest.TextTestRunner().run(suite)
+    unittest.main()
