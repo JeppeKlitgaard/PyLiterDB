@@ -172,11 +172,12 @@ class _Base(object):
         self.protocol = protocol
         # if base exists, get field names
         if self.exists:
-            if protocol == 0:
-                _in = open(self.path)  # don't specify binary mode !
-            else:
-                _in = open(self.path, 'rb')
-            self.fields = pickle.load(_in)
+            mode = "r"
+            if not protocol == 0:
+                mode += "b"
+
+            with open(self.path, mode) as _in:
+                self.fields = pickle.load(_in)
 
     @property
     def exists(self):
@@ -250,27 +251,27 @@ class _Base(object):
     def open(self):
         """Open an existing database and load its content into memory"""
         # guess protocol
-        if self.protocol == 0:
-            _in = open(self.path)  # don't specify binary mode !
-        else:
-            _in = open(self.path, 'rb')
-        self.fields = pickle.load(_in)
-        self.next_id = pickle.load(_in)
-        self.records = pickle.load(_in)
-        self.indices = pickle.load(_in)
+        mode = "r"
+        if not self.protocol == 0:
+            mode += "b"
+
+        with open(self.path, mode) as _in:
+            self.fields = pickle.load(_in)
+            self.next_id = pickle.load(_in)
+            self.records = pickle.load(_in)
+            self.indices = pickle.load(_in)
+
         for f in self.indices.keys():
             setattr(self, '_' + f, Index(self, f))
-        _in.close()
         self.mode = "open"
 
     def commit(self):
-        """Write the database to a file"""
-        out = open(self.path, 'wb')
-        pickle.dump(self.fields, out, self.protocol)
-        pickle.dump(self.next_id, out, self.protocol)
-        pickle.dump(self.records, out, self.protocol)
-        pickle.dump(self.indices, out, self.protocol)
-        out.close()
+        """Write the database to disk"""
+        with open(self.path, "wb") as _out:
+            pickle.dump(self.fields, _out, self.protocol)
+            pickle.dump(self.next_id, _out, self.protocol)
+            pickle.dump(self.records, _out, self.protocol)
+            pickle.dump(self.indices, _out, self.protocol)
 
     def insert(self, *args, **kw):
         """Insert a record in the database
