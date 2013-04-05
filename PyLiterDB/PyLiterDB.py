@@ -75,12 +75,6 @@ try:
 except:
     import pickle
 
-# compatibility with Python 2.3
-try:
-    set([])
-except NameError:
-    from sets import Set as set
-
 
 class Index(object):
     """Class used for indexing a base on a field
