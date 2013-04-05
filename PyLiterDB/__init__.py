@@ -1,1 +1,1 @@
-from PyDbLite import *
+from PyLiterDB import *
