@@ -69,6 +69,9 @@ VERSION = ("2", "6")
 
 import os
 import bisect
+import sys
+
+PYTHON_VERSION = sys.version_info[0]
 
 try:
     import cPickle as pickle
@@ -156,7 +159,7 @@ class Tester(object):
         return iter(self.records)
 
 
-class _Base(object):
+class DB(object):
     def __init__(self, path, protocol=pickle.HIGHEST_PROTOCOL):
         """protocol as defined in pickle / pickle
         Defaults to the highest protocol available
@@ -436,20 +439,9 @@ class _Base(object):
     def __contains__(self, record_id):
         return record_id in self.records
 
-
-class _Base_Py2(_Base):
     def __iter__(self):
         """Iteration on the records"""
-        return iter(self.records.itervalues())
-
-
-class _Base_Py3(_Base):
-    def __iter__(self):
-        """Iteration on the records"""
-        return iter(self.records.values())
-
-import sys
-if sys.version_info[0] == 2:
-    Base = _Base_Py2
-else:
-    Base = _Base_Py3
+        if PYTHON_VERSION == 2:
+            return iter(self.records.itervalues())
+        else:
+            return iter(self.records.values())
