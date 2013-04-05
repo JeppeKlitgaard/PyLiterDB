@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from distutils.core import setup
+from PyLiterDB import VERSION
 
 setup(name='PyLiterDB',
-      version='2.6',
+      version='.'.join(VERSION),
       description='PyLiterDB, a fast, pure-Python in-memory database',
       author='Jeppe Klitgaard',
       author_email='jeppe@dapj.dk',

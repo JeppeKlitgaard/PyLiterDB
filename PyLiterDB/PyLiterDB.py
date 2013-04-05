@@ -65,7 +65,7 @@ version 2.6
 - adapt code to run on Python 2 and Python 3
 """
 
-version = "2.6"
+VERSION = ("2", "6")
 
 import os
 import bisect
