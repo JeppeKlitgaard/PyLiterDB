@@ -1,15 +1,13 @@
 # -*- coding: iso-8859-1 -*-
-
 import datetime
 import unittest
 import random
-
 import os
 import sys
 sys.path.insert(0, os.path.dirname(os.getcwd()))
-import PyDbLite
-print(PyDbLite.__file__)
-print(dir(PyDbLite))
+import PyLiterDB
+print(PyLiterDB.__file__)
+print(dir(PyLiterDB))
 
 if os.path.exists('test.pdl'):
     os.remove('test.pdl')
@@ -26,7 +24,7 @@ vals3 = [('éçùï', datetime.date(2000, 10, 10), 55)]
 class TestFunctions(unittest.TestCase):
     def test_00_init(self):
         global db
-        db = PyDbLite.Base('test.pdl')
+        db = PyLiterDB.Base('test.pdl')
         db.create('name', 'birth', 'age', mode="override")
 
     def test_01_insert(self):
