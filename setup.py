@@ -4,10 +4,6 @@ from distutils.core import setup
 
 import sys
 
-package_dir = {
-    'PyDbLite.test': 'PyDbLite/test'
-}
-
 setup(name='PyDbLite',
       version='2.6',
       description='PyDbLite, a fast, pure-Python in-memory database',
