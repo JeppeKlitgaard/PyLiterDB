@@ -82,7 +82,7 @@ except NameError:
     from sets import Set as set
 
 
-class Index:
+class Index(object):
     """Class used for indexing a base on a field
     The instance of Index is an attribute the Base instance"""
 
@@ -103,7 +103,7 @@ class Index:
         return [self.db.records[_id] for _id in ids]
 
 
-class Tester:
+class Tester(object):
     def __init__(self, db, key):
         self.db = db
         self.key = key
@@ -162,7 +162,7 @@ class Tester:
         return iter(self.records)
 
 
-class _Base:
+class _Base(object):
     def __init__(self, path, protocol=pickle.HIGHEST_PROTOCOL):
         """protocol as defined in pickle / pickle
         Defaults to the highest protocol available
