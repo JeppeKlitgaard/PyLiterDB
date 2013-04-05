@@ -29,42 +29,6 @@ class TestPyLiterDB(unittest.TestCase):
         os.remove(filename)
         del self.db
 
-#    def test_01_insert(self):
-#        for i, val in enumerate(vals1 + vals2 + vals3):
-#            assert db.insert(*val) == i
-#        assert len(db) == len(vals1 + vals2 + vals3)
-#
-#    def test_10_select(self):
-#        for i, v in enumerate(vals1):
-#            rec = db[i]
-#            for j, field in enumerate(db.fields):
-#                assert rec[field] == v[j]
-#
-#    def test_11_select(self):
-#        assert db(name='foo') == []
-#        assert db(name='יחשן')[0]['birth'] == datetime.date(2000, 10, 10)
-#
-#    def test_12_iter(self):
-#        self.assertEqual(len([x for x in db]), len(db))
-#        for val in vals1+vals2+vals3:
-#            self.assertEqual([x for x in db if x['name'] == val],
-#                             db(name=val))
-#            self.assertEqual([x for x in db if x['birth'] == val],
-#                             db(birth=val))
-#            self.assertEqual([x for x in db if x['age'] == val],
-#                             db(age=val))
-#
-#    def test_30_update(self):
-#        for record in db:
-#            db.update(record, name=record['name'].capitalize())
-#        self.assertEqual(db[0]['name'], "Simon")
-#        #self.assertEqual(db[5]['name'][0],"ֹ")
-#
-#    def test_40_delete(self):
-#        del db[0]
-#        self.assertEqual(db(name='Simon'), [])
-#        self.assertEqual(len(db), len(vals1 + vals2 + vals3) - 1)
-
     def test_db_insert(self):
         self.tearDown()
         self.setUp(empty=True)  # For this test we want an empty database
