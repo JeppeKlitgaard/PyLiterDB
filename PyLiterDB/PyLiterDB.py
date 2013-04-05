@@ -193,17 +193,22 @@ class _Base(object):
         if os.path.exists(self.path):
             if not os.path.isfile(self.path):
                 raise IOError("%s exists and is not a file" % self.path)
+
             elif self.mode is None:
                 raise IOError("Base %s already exists" % self.path)
+
             elif self.mode == "open":
                 return self.open()
+
             elif self.mode == "override":
                 os.remove(self.path)
+
         self.fields = list(fields)
         self.records = {}
         self.next_id = 0
         self.indices = {}
         self.commit()
+
         return self
 
     def create_index(self, *fields):
