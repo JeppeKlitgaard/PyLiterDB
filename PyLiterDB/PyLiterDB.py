@@ -189,15 +189,15 @@ class _Base(object):
         - if mode = 'open' : open the existing base, ignore the fields
         - if mode = 'override' : erase the existing base and create a
         new one with the specified fields"""
-        self.mode = mode = kw.get("mode", None)
+        self.mode = kw.get("mode", None)
         if os.path.exists(self.path):
             if not os.path.isfile(self.path):
                 raise IOError("%s exists and is not a file" % self.path)
-            elif mode is None:
+            elif self.mode is None:
                 raise IOError("Base %s already exists" % self.path)
-            elif mode == "open":
+            elif self.mode == "open":
                 return self.open()
-            elif mode == "override":
+            elif self.mode == "override":
                 os.remove(self.path)
         self.fields = list(fields)
         self.records = {}
