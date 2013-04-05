@@ -171,13 +171,14 @@ class _Base(object):
         self.name = os.path.splitext(os.path.basename(path))[0]
         self.protocol = protocol
         # if base exists, get field names
-        if self.exists():
+        if self.exists:
             if protocol == 0:
                 _in = open(self.path)  # don't specify binary mode !
             else:
                 _in = open(self.path, 'rb')
             self.fields = pickle.load(_in)
 
+    @property
     def exists(self):
         return os.path.exists(self.path)
 
