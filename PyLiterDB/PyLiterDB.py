@@ -198,7 +198,7 @@ class _Base(object):
                 raise IOError("Base %s already exists" % self.path)
 
             elif self.mode == "open":
-                return self.open()
+                self.open()
 
             elif self.mode == "override":
                 os.remove(self.path)
@@ -208,8 +208,6 @@ class _Base(object):
         self.next_id = 0
         self.indices = {}
         self.commit()
-
-        return self
 
     def create_index(self, *fields):
         """Create an index on the specified field names
@@ -264,7 +262,6 @@ class _Base(object):
             setattr(self, '_' + f, Index(self, f))
         _in.close()
         self.mode = "open"
-        return self
 
     def commit(self):
         """Write the database to a file"""
