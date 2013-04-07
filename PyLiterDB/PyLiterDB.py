@@ -160,7 +160,13 @@ class DB(object):
                 self.fields = pickle.load(_in)
 
     @property
+    def empty(self):
+        """Is the DB empty."""
+        return len(self) == 0
+
+    @property
     def exists(self):
+        """Does the DB exist on disk."""
         return os.path.exists(self.path)
 
     def create(self, *fields, **kw):
@@ -414,6 +420,7 @@ class DB(object):
         return self.records[key]
 
     def __len__(self):
+        # record count
         return len(self.records)
 
     def __delitem__(self, record_id):
@@ -425,7 +432,7 @@ class DB(object):
 
     def __iter__(self):
         """Iteration on the records"""
-        if PYTHON_VERSION == 2:
+        if PYTHON_VERSION == 2:  # Python 2.
             return iter(self.records.itervalues())
-        else:
+        else:  # Python 3.
             return iter(self.records.values())
