@@ -18,7 +18,7 @@ filename = "test.pdl"
 
 class TestPyLiterDB(unittest.TestCase):
     def setUp(self, empty=False):
-        self.db = PyLiterDB.Base(filename)
+        self.db = PyLiterDB.DB(filename)
         self.db.create("name", "birth", "age", mode="override")
         if not empty:
             for val in vals:
