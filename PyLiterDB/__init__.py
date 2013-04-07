@@ -1,1 +1,1 @@
-from PyLiterDB import *
+from PyLiterDB import DB, VERSION
